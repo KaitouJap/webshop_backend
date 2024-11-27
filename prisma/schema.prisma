@@ -9,6 +9,21 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+model ProductType {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Product Product[]
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  name          String
+  count         Int
+  price         Float
+  productTypeId Int
+  ProductType   ProductType @relation(fields: [productTypeId], references: [id])
 }
