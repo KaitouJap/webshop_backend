@@ -68,4 +68,24 @@ export class ProductsService {
       where: { id },
     });
   }
+
+  async buyProduct(id: number): Promise<void> {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+    });
+    if(!product) throw new NotFoundException("Product not found!");
+
+    if(product.count <= 0) throw new BadRequestException("Product out of stock!");
+
+    await this.prisma.product.update({
+      where: { id },
+      data: {
+        count: product.count-1,
+      },
+    });
+  }
+
+  async getProductTypes(): Promise<ProductType[]> {
+    return this.prisma.productType.findMany({});
+  }
 }
